@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 
 import { registerUser } from "../controllers/auth.controller";
+import { loginUser } from "../controllers/auth.controller";
 import { validate } from "../middleware/validate.middleware";
 import { asyncHandler } from "../utils/asyncHandler";
 import { registerSchema } from "../validators/register.schema";
@@ -22,5 +23,6 @@ router.get("/beli", (req: Request, res: Response) => {
 
 // router.post('/register', validate(registerSchema), registerUser);
 router.post("/register", validate(registerSchema), asyncHandler(registerUser));
+router.post("/login", asyncHandler(loginUser));
 
 export default router;
