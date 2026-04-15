@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
 
-export const registerUser = async (req: Request, res: Response) => {
-    // console.log('Body iz controllera: ', req.body);
+import { User } from "../models/user.model";
 
-    // res.status(201).json({
-    //     message: 'User registorvan bajo',
-    //     data: req.body,
-    // });
-    throw new Error('Testna greska batke nova sa async')
-}
+export const registerUser = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  const user = await User.create({
+    email,
+    password,
+  });
+
+  res.json(user);
+};

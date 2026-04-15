@@ -1,12 +1,14 @@
 import "dotenv/config";
+
 import express, { Request, Response } from "express";
+
 import { connectDB } from "./src/config/db";
+import { errorHandler } from "./src/middleware/error.middleware";
+import bodyRoutes from "./src/routes/body.routes";
+import paramsRoutes from "./src/routes/params.routes";
+import queryRoutes from "./src/routes/query.routes";
 import testRoutes from "./src/routes/test.routes";
 import testRoutes2 from "./src/routes/test2.routes";
-import bodyRoutes from "./src/routes/body.routes";
-import queryRoutes from "./src/routes/query.routes";
-import paramsRoutes from "./src/routes/params.routes";
-import { errorHandler } from "./src/middleware/error.middleware";
 
 const startServer = async () => {
   await connectDB();
