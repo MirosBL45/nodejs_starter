@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 
 import { connectDB } from "./src/config/db";
 import { errorHandler } from "./src/middleware/error.middleware";
@@ -9,6 +9,7 @@ import paramsRoutes from "./src/routes/params.routes";
 import queryRoutes from "./src/routes/query.routes";
 import testRoutes from "./src/routes/test.routes";
 import testRoutes2 from "./src/routes/test2.routes";
+import slikeRoutes from './src/routes/upload.routes'
 
 const startServer = async () => {
   await connectDB();
@@ -22,7 +23,7 @@ const startServer = async () => {
     next();
   });
 
-  applikacija.use((req, res, next) => {
+  applikacija.use((req: Request, res: Response, next: NextFunction) => {
     console.log("2 Drugi middleware");
     next();
   });
@@ -32,6 +33,8 @@ const startServer = async () => {
   applikacija.use("/rubi", testRoutes);
 
   applikacija.use("/srecko", testRoutes2);
+
+  applikacija.use('/slike', slikeRoutes);
 
   applikacija.use("/bodika", bodyRoutes);
   applikacija.use("/querko", queryRoutes);

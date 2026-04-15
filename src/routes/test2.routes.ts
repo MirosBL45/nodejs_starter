@@ -33,7 +33,7 @@ router.get("/protected", authMiddleware, (req: Request, res: Response) => {
   });
 });
 
-router.get("/admin-only", authMiddleware, roleMiddleware(["admin"]), (res: Response, req: Request) => {
+router.get("/admin-only", authMiddleware, roleMiddleware(["admin"]), (req: Request, res: Response) => {
   res.json({
     message: "Samo admin vidi sine",
   });
