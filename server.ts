@@ -5,11 +5,12 @@ import express, { NextFunction, Request, Response } from "express";
 import { connectDB } from "./src/config/db";
 import { errorHandler } from "./src/middleware/error.middleware";
 import bodyRoutes from "./src/routes/body.routes";
+import createPost from "./src/routes/createPost.routes";
 import paramsRoutes from "./src/routes/params.routes";
 import queryRoutes from "./src/routes/query.routes";
 import testRoutes from "./src/routes/test.routes";
 import testRoutes2 from "./src/routes/test2.routes";
-import slikeRoutes from './src/routes/upload.routes'
+import slikeRoutes from "./src/routes/upload.routes";
 
 const startServer = async () => {
   await connectDB();
@@ -34,7 +35,9 @@ const startServer = async () => {
 
   applikacija.use("/srecko", testRoutes2);
 
-  applikacija.use('/slike', slikeRoutes);
+  applikacija.use("/slike", slikeRoutes);
+
+  applikacija.use("/postovi", createPost);
 
   applikacija.use("/bodika", bodyRoutes);
   applikacija.use("/querko", queryRoutes);
