@@ -5,8 +5,8 @@ import express, { NextFunction, Request, Response } from "express";
 import { connectDB } from "./src/config/db";
 import { errorHandler } from "./src/middleware/error.middleware";
 import bodyRoutes from "./src/routes/body.routes";
-import createPost from "./src/routes/createPost.routes";
 import paramsRoutes from "./src/routes/params.routes";
+import allPosts from "./src/routes/posts.routes";
 import queryRoutes from "./src/routes/query.routes";
 import testRoutes from "./src/routes/test.routes";
 import testRoutes2 from "./src/routes/test2.routes";
@@ -37,7 +37,7 @@ const startServer = async () => {
 
   applikacija.use("/slike", slikeRoutes);
 
-  applikacija.use("/postovi", createPost);
+  applikacija.use("/postovi", allPosts);
 
   applikacija.use("/bodika", bodyRoutes);
   applikacija.use("/querko", queryRoutes);
