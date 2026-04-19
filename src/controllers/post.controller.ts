@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 
 import { AuthRequest } from "../middleware/auth.middleware";
 import { Post } from "../models/post.model";
@@ -60,4 +61,24 @@ export const getPosts = async (req: Request, res: Response) => {
     totalPages: Math.ceil(total / limit),
     data: posts,
   });
+};
+
+export const getSinglePost = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!id || typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({
+      message: "Nevalidan ID buraz",
+    });
+  }
+
+  const post = await Post.findById(id);
+
+  if (!post) {
+    return res.status(404).json({
+      message: "Post ga nema prike",
+    });
+  }
+
+  res.json(post);
 };
