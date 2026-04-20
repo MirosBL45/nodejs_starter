@@ -5,10 +5,21 @@ export const validate = (schema: z.ZodTypeAny) => (req: Request, res: Response, 
   try {
     schema.parse(req.body);
     next();
-  } catch (error: any) {
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const formattedErrors = error.issues.map((err) => ({
+        field: err.path[0],
+        message: err.message,
+      }));
+
+      return res.status(400).json({
+        message: formattedErrors[0]?.message || "Validation error",
+        errors: formattedErrors,
+      });
+    }
+
     return res.status(400).json({
-      message: "Validation error човеče",
-      errors: error.errors,
+      message: "Validation error",
     });
   }
 };

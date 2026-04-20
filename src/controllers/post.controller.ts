@@ -13,7 +13,7 @@ export const createPost = async (req: Request, res: Response) => {
 
   const numberOfWords = content.split(" ").length;
   const onlyLetters = content.match(/[a-zA-Z\u0080-\u024F]/g)?.length || 0;
-  const readingTime = Math.ceil(numberOfWords / 200);
+  const readingTime = Math.ceil(numberOfWords / 30);
 
   if (!req.file) {
     throw new Error("Slika je obavezna prike");
