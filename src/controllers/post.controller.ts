@@ -1,17 +1,19 @@
 import { Request, Response } from "express";
+import fs from "fs";
 import mongoose from "mongoose";
+import path from "path";
 
 import { AuthRequest } from "../middleware/auth.middleware";
 import { Post } from "../models/post.model";
 
 export const createPost = async (req: Request, res: Response) => {
+  const authReq = req as AuthRequest;
+
   const { title, content } = req.body;
 
   const numberOfWords = content.split(" ").length;
   const onlyLetters = content.match(/[a-zA-Z\u0080-\u024F]/g)?.length || 0;
   const readingTime = Math.ceil(numberOfWords / 200);
-
-  const authReq = req as AuthRequest;
 
   if (!req.file) {
     throw new Error("Slika je obavezna prike");
@@ -84,9 +86,9 @@ export const getSinglePost = async (req: Request, res: Response) => {
 };
 
 export const updatePost = async (req: Request, res: Response) => {
-  const { id } = req.params;
-
   const authReq = req as AuthRequest;
+
+  const { id } = req.params;
 
   // ✅ 1. VALIDACIJA ID-a
   if (!id || typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
@@ -140,5 +142,50 @@ export const updatePost = async (req: Request, res: Response) => {
   res.json({
     message: "Post promenjen, bravo prike",
     data: post,
+  });
+};
+
+export const deletePost = async (req: Request, res: Response) => {
+  const authReq = req as AuthRequest;
+
+  const { id } = req.params;
+
+  // 1. validacija ID-a
+  if (!id || typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({
+      message: "Nevalidan ID batke",
+    });
+  }
+
+  const post = await Post.findById(id);
+
+  // 2. da li post postoji
+  if (!post) {
+    return res.status(404).json({
+      message: "Post ne postoji sine",
+    });
+  }
+
+  // 3. samo vlasnik može da briše
+  if (post.userId.toString() !== authReq.user?.userId) {
+    return res.status(403).json({
+      message: "Niej tvoj post da tako ide",
+    });
+  }
+
+  // 4. obriši sliku sa diska ako postoji
+  if (post.image) {
+    const imagePath = path.resolve(post.image);
+
+    if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+    }
+  }
+
+  // 5. obriši post iz baze
+  await post.deleteOne();
+
+  res.json({
+    message: "Post i slika obrisani prike",
   });
 };

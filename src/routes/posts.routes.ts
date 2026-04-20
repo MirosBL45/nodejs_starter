@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import { upload } from "../config/multer";
-import { createPost, getPosts, getSinglePost, updatePost } from "../controllers/post.controller";
+import { createPost, deletePost, getPosts, getSinglePost, updatePost } from "../controllers/post.controller";
 import { authMiddleware } from "../middleware/auth.middleware";
 
 const router = Router();
@@ -13,5 +13,7 @@ router.get("/get-posts", getPosts);
 router.get("/post/:id", getSinglePost);
 
 router.put("/post/:id", authMiddleware, upload.single("image"), updatePost);
+
+router.delete("/post/:id", authMiddleware, deletePost);
 
 export default router;
