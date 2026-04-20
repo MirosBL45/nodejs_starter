@@ -82,3 +82,63 @@ export const getSinglePost = async (req: Request, res: Response) => {
 
   res.json(post);
 };
+
+export const updatePost = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const authReq = req as AuthRequest;
+
+  // ✅ 1. VALIDACIJA ID-a
+  if (!id || typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({
+      message: "Nevalidan ID torima",
+    });
+  }
+
+  const post = await Post.findById(id);
+
+  // ✅ 2. POST POSTOJI?
+  if (!post) {
+    return res.status(404).json({
+      message: "Post ne postoji prike",
+    });
+  }
+
+  // ✅ 3. VLASNIŠTVO
+  if (post.userId.toString() !== authReq.user?.userId) {
+    return res.status(403).json({
+      message: "Nije tvoj post buraz",
+    });
+  }
+
+  const { title, content } = req.body;
+
+  // ✅ 4. UPDATE samo ako postoji vrednost
+  if (title) {
+    post.title = title;
+  }
+
+  if (content) {
+    post.content = content;
+
+    // 🔥 recalculation samo ako se content menja
+    const numberOfWords = content.split(" ").length;
+    const onlyLetters = content.match(/[a-zA-Z\u0080-\u024F]/g)?.length || 0;
+
+    post.readingTime = Math.ceil(numberOfWords / 30);
+    post.numberOfWords = numberOfWords;
+    post.onlyLetters = onlyLetters;
+  }
+
+  // ✅ 5. UPDATE SLIKE (opciono)
+  if (req.file) {
+    post.image = req.file.path;
+  }
+
+  await post.save();
+
+  res.json({
+    message: "Post promenjen, bravo prike",
+    data: post,
+  });
+};
