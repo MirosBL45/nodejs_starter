@@ -29,8 +29,6 @@ const startServer = async () => {
     next();
   });
 
-  applikacija.use(errorHandler);
-
   applikacija.use("/rubi", testRoutes);
 
   applikacija.use("/srecko", testRoutes2);
@@ -47,6 +45,8 @@ const startServer = async () => {
     res.send("Hellooo, Server radi, Rubi lepa maca 7500");
     console.log("3 Rute");
   });
+
+  applikacija.use(errorHandler);
 
   applikacija.listen(7500, () => {
     console.log("Server sljaka na portu 7500");
