@@ -1,6 +1,8 @@
 import "dotenv/config";
 
+import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
+import path from "path";
 
 import { connectDB } from "./src/config/db";
 import { errorHandler } from "./src/middleware/error.middleware";
@@ -45,6 +47,10 @@ const startServer = async () => {
     res.send("Hellooo, Server radi, Rubi lepa maca 7500");
     console.log("3 Rute");
   });
+
+  applikacija.use("/uploads", express.static(path.resolve("uploads")));
+
+  applikacija.use(cors());
 
   applikacija.use(errorHandler);
 
