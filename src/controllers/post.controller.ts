@@ -70,7 +70,7 @@ export const getSinglePost = async (req: Request, res: Response) => {
 
   if (!id || typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({
-      message: "Nevalidan ID buraz",
+      message: "Nevalidan ID buraz moj",
     });
   }
 
