@@ -19,6 +19,12 @@ const startServer = async () => {
 
   const applikacija = express();
 
+  applikacija.use(
+    cors({
+      origin: "http://localhost:3000",
+    })
+  );
+
   applikacija.use(express.json());
 
   applikacija.use((req, res, next) => {
@@ -49,8 +55,6 @@ const startServer = async () => {
   });
 
   applikacija.use("/uploads", express.static(path.resolve("uploads")));
-
-  applikacija.use(cors());
 
   applikacija.use(errorHandler);
 
