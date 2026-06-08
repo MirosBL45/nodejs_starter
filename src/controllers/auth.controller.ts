@@ -5,13 +5,14 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/user.model";
 
 export const registerUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { email, password, role } = req.body;
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = await User.create({
     email,
     password: hashedPassword,
+    role: role === "admin" ? "admin" : "user",
   });
 
   res.json(user);
